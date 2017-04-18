@@ -1,0 +1,8 @@
+[core]
+    attributesfile = ~/.gitattributes
+[merge "s3m"]
+    name = semi_structured_3_way_merge_tool_for_java
+    driver = java  -jar "${path}" -f %A %O %B -o %A -g
+[diff "fake"]
+    command = false
+

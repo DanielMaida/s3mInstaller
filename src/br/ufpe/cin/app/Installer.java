@@ -61,6 +61,42 @@ public class Installer {
 		initialize();
 	}
 
+	private void deployConfigurationFiles() throws IOException
+	{
+		Path installDirectory = FileSystems.getDefault().getPath(installPath, "s3m.jar");
+		Files.copy(Installer.class.getResourceAsStream("/s3m.jar"), installDirectory,
+				REPLACE_EXISTING);
+		deployGitConfig();
+		deployGitAttributes();
+		
+	}
+	
+	private void deployGitConfig() throws IOException
+	{
+		File gitconfig = new File(System.getProperty("user.home"), ".gitconfig");
+		FileWriter fileWriter = new FileWriter(gitconfig, true);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		String gitConfigTemplate = new Scanner(Installer.class.getResourceAsStream("/.gitconfig")).useDelimiter("\\Z").next();
+		String gitConfigOutput = gitConfigTemplate.replaceAll("\\$\\{path\\}",
+				installPath.replace('\\', '/') + "/s3m.jar");
+
+		bufferedWriter.write(gitConfigOutput);
+		bufferedWriter.close();
+		fileWriter.close();
+	}
+	
+	private void deployGitAttributes() throws IOException
+	{
+		File gitattributes = new File(System.getProperty("user.home"), ".gitattributes");
+		FileWriter fileWriter = new FileWriter(gitattributes, true);
+		BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+		String gitAttributesString = "\n*.java merge=s3m";
+		bufferedWriter.write(gitAttributesString);
+		bufferedWriter.close();
+	}
+	
+	
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -123,30 +159,11 @@ public class Installer {
 		btnInstall.setBounds(362, 312, 99, 23);
 		btnInstall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				
 				if (installPathField.getText() != null && !installPathField.getText().equals("")) {
-					Path jarSource = FileSystems.getDefault().getPath("files", "s3m.jar");
-					Path gitAttributesSource = FileSystems.getDefault().getPath("", ".gitattributes");
-					Path installDirectory = FileSystems.getDefault().getPath(installPath, "s3m.jar");
-					Path gitAttributesDirectory = FileSystems.getDefault().getPath(System.getProperty("user.home"),
-							".gitattributes");
+					
 					try {
-						Files.copy(Installer.class.getResourceAsStream("/s3m.jar"), installDirectory,
-								REPLACE_EXISTING);
-						Files.copy(Installer.class.getResourceAsStream("/.gitattributes"), gitAttributesDirectory,
-								REPLACE_EXISTING);
-
-						File gitconfig = new File(System.getProperty("user.home"), ".gitconfig");
-						FileWriter fileWriter = new FileWriter(gitconfig);
-						BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-
-						String gitConfigTemplate = new Scanner(Installer.class.getResourceAsStream("/.gitconfig"))
-								.useDelimiter("\\Z").next();//
-						String gitConfigOutput = gitConfigTemplate.replaceAll("\\$\\{path\\}",
-								installPath.replace('\\', '/') + "/s3m.jar");
-
-						bufferedWriter.write(gitConfigOutput);
-						bufferedWriter.close();
-
+						deployConfigurationFiles();
 						readme_text.setText(
 								"s3m\r\n========\r\nCopyright (c) 2016 by the Federal University of Pernambuco.\r\nA semistructured merge tool for Java applications.\r\nContact Guilherme Cavalcanti gjcc@cin.ufpe.br.\r\n\r\nUsage\r\n\r\n1 - Run s3m with git\r\n\r\nAfter this installation the s3m is automatically integrated with git, feel free to use git as always!\r\n\r\n2 - Use the s3m.jar manually from the installation folder.\r\n\r\n* Merging 3 files:\r\n\r\njava -jar \""
 										+ installPath.replace('\\', '/')

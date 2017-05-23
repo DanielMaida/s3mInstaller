@@ -63,8 +63,11 @@ public class Installer {
 
 	private void deployConfigurationFiles() throws IOException
 	{
-		Path installDirectory = FileSystems.getDefault().getPath(installPath, "s3m.jar");
-		Files.copy(Installer.class.getResourceAsStream("/s3m.jar"), installDirectory,
+		Path toolDirectory = FileSystems.getDefault().getPath(installPath, "s3m.jar");
+		Path uninstallerDirectory = FileSystems.getDefault().getPath(installPath, "s3mUninstaller.jar");
+		Files.copy(Installer.class.getResourceAsStream("/s3m.jar"), toolDirectory,
+				REPLACE_EXISTING);
+		Files.copy(Installer.class.getResourceAsStream("/s3mUninstaller.jar"), uninstallerDirectory,
 				REPLACE_EXISTING);
 		deployGitConfig();
 		deployGitAttributes();

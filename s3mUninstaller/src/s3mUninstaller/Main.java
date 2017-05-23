@@ -40,7 +40,7 @@ public class Main {
 		Path gitAttributesPath = Paths.get(System.getProperty("user.home"), ".gitattributes");
 		Charset charset = StandardCharsets.UTF_8;
 		String gitAttributes = new String(Files.readAllBytes(gitAttributesPath), charset);
-		gitAttributes = gitAttributes.replace("\\*.java merge=s3m", "");
+		gitAttributes = gitAttributes.replace("*.java merge=s3m", "");
 		Files.write(gitAttributesPath, gitAttributes.getBytes(charset));
 		
 	}

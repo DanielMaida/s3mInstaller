@@ -1,7 +1,6 @@
 package br.ufpe.cin.app;
 
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -13,11 +12,16 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import org.apache.commons.io.FileUtils;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 import java.awt.Font;
 import javax.swing.JSeparator;
@@ -69,6 +73,7 @@ public class Installer {
 				REPLACE_EXISTING);
 		Files.copy(Installer.class.getResourceAsStream("/s3mUninstaller.jar"), uninstallerDirectory,
 				REPLACE_EXISTING);
+		deployTests();
 		deployGitConfig();
 		deployGitAttributes();
 		
@@ -97,6 +102,27 @@ public class Installer {
 		bufferedWriter.write(gitAttributesString);
 		bufferedWriter.close();
 	}
+	
+	private void deployTests() throws IOException
+	{
+		try
+		{
+			Path testsDirectory = FileSystems.getDefault().getPath(installPath, "shelltests.zip");
+			Files.copy(Installer.class.getResourceAsStream("/shelltests.zip"), testsDirectory,REPLACE_EXISTING);
+			ZipFile zipFile = new ZipFile(testsDirectory.toString());
+			zipFile.extractAll(installPath);
+			Files.delete(testsDirectory);
+		}
+		catch (ZipException e) 
+		{
+			JOptionPane.showMessageDialog(null,
+					"The install path is invalid or you don't have permission to write on that directory");
+			e.printStackTrace();
+			System.exit(1);
+		}
+		
+	}
+	
 	
 	
 	

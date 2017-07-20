@@ -80,7 +80,7 @@ public class Main extends Application {
 		TextArea licenseText = new TextArea();
 		licenseText.setPrefRowCount(50);
 		licenseText.setEditable(false);
-		licenseText.setText("License here");
+		licenseText.setText("This tool is based on the work of Jörg Liebig, Benjamin Brandl, Christian Lengauer,\nChristian Kästner and Sven Apel, which authorized the use, modification and\ndistribution of the original source code found at:\n\nhttps://github.com/joliebig/featurehouse");
 		
 		centerVBox.getChildren().add(licenseText);
 		borderPane.setCenter(centerVBox);
@@ -126,7 +126,7 @@ public class Main extends Application {
 		//Center part - browse path
 		
 		TextField txtPath = new TextField();
-		txtPath.setPrefColumnCount(36);
+		txtPath.setPrefColumnCount(33);
 		txtPath.setEditable(false);
 		
 		Button btnBrowse = new Button("Browse");
@@ -134,7 +134,7 @@ public class Main extends Application {
 		btnBrowse.setOnAction(e -> {
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			directoryChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-			directoryChooser.setTitle("Install path");
+			directoryChooser.setTitle("Installation path");
 			File chosenDirectory = directoryChooser.showDialog(window);
 			if(chosenDirectory != null){
 				installPath = chosenDirectory.getAbsolutePath();
@@ -142,7 +142,7 @@ public class Main extends Application {
 			}
 		});
 		
-		Label installPathLabel = new Label("Install path:");
+		Label installPathLabel = new Label("Installation path:");
 		
 		HBox labelHBox = new HBox();
 		labelHBox.setPadding(new Insets(15,15,0,15));
@@ -180,7 +180,11 @@ public class Main extends Application {
 							+ installPath.replace('\\', '/')
 							+ "/s3m.jar\" -f mine base theirs -o output\r\n\r\nWhere *mine*, *base*, *theirs* and *output* are filepaths. The attribute -o is optional, if omitted, *theirs* will be used as output file.\r\n\r\n* Merging 3 directories:\r\n\r\njava -jar \""
 							+ installPath.replace('\\', '/')
-							+ "/s3m.jar\" -d mine base theirs -o output\r\n\r\nWhere *mine*, *base*, *theirs* and *output* are directory paths. The attribute -o is optional, if omitted, *theirs* will be used as output directory.");
+							+ "/s3m.jar\" -d mine base theirs -o output\r\n\r\nWhere *mine*, *base*, *theirs* and *output* are directory paths. The attribute -o is optional, if omitted, *theirs* will be used as output directory.\r\n\r\n"
+							+ "There is also a folder named \"shelltests\" that can be used for testing the tool.\n"
+							+ "To test the tool, install the shunit2 framework for shell testing, you can install it on any unix based VM or distribution via:\n\n"
+							+ "\"sudo apt-get install shunit2\"\n\n"
+							+ "To run the tests just type \"shunit2 name_of_the_test\" in the terminal, you need to be in \"shelltests\" folder in order to execute the tests");
 					Alert successfulAlert = new Alert(AlertType.INFORMATION, "The installation went down successfully");
 					successfulAlert.showAndWait();
 					window.setScene(readmeScene);
